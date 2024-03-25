@@ -42,3 +42,14 @@
 .chevron {
 	transition: transform 200ms ease;
 }
+.negative {
+	display: flex;
+	align-items: center;
+	background-color: red;
+}
+
+.positive {
+	display: flex;
+	align-items: center;
+	background-color: green;
+}

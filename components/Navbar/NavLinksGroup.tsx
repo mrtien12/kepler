@@ -1,18 +1,19 @@
 'use client';
 
-import { Box, Collapse, Group, ThemeIcon, UnstyledButton, useDirection } from '@mantine/core';
+import { Box, Button, Collapse, Group, ThemeIcon, UnstyledButton, useDirection } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import classes from './NavLinksGroup.module.css';
-
+import clsx from 'clsx';
 interface LinksGroupProps {
 	icon: React.FC<any>;
 	label: string;
 	link?: string;
 	initiallyOpened?: boolean;
-	links?: { label: string; link: string }[];
+	links?: { label: string; link: string;balance:number }[];
+	
 }
 
 export function NavLinksGroup({
@@ -29,14 +30,17 @@ export function NavLinksGroup({
 	const [opened, setOpened] = useState(initiallyOpened || false);
 	const ChevronIcon = dir === 'ltr' ? IconChevronRight : IconChevronLeft;
 	const items = (hasLinks ? links : []).map(link => {
+		const balanceClass = link.balance > 0 ? classes.positive : classes.negative;
 		return (
-			<Link
-				href={link.link}
+			<Button
 				key={link.label}
 				className={`${classes.link} ${link.link === pathname && classes.activeLink}`}
+				variant='subtle'
+				rightSection={<Box className={balanceClass}>{link.balance}</Box>}
+				size='md'
 			>
 				{link.label}
-			</Link>
+			</Button>
 		);
 	});
 

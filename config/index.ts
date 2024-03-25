@@ -4,32 +4,36 @@ import { NavItem } from '@/types/nav-item';
 export const navLinks: NavItem[] = [
 
 	{
-		label: 'Components',
+		label: 'Budgeted',
 		icon: IconComponents,
-		initiallyOpened: false,
+		initiallyOpened: true,
 		links: [
 			{
 				label: 'Table',
 				link: '/dashboard/table',
+				balance: 1000
 			},
 			{
 				label: 'Form',
 				link: '/dashboard/form',
+				balance: -1000
 			},
 		],
 	},
 	{
-		label: 'Auth',
+		label: 'Loan',
 		icon: IconLock,
-		initiallyOpened: false,
+		initiallyOpened: true,
 		links: [
 			{
 				label: 'Login',
 				link: '/login',
+				balance: -1000
 			},
 			{
 				label: 'Register',
 				link: '/register',
+				balance: -1000
 			},
 		],
 	},

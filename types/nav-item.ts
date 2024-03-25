@@ -5,5 +5,6 @@ export interface NavItem {
 	icon: (props: TablerIconsProps) => JSX.Element;
 	link?: string;
 	initiallyOpened?: boolean;
-	links?: { label: string; link: string }[];
+	links?: { label: string; link: string;balance: number; }[];
+	
 }

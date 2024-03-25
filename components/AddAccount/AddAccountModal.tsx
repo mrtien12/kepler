@@ -91,16 +91,11 @@
 
 // }
 
-import { createClient, QueryResult, QueryData, QueryError } from "@supabase/supabase-js";
 
 import { Modal, TextInput, Select, Button, NumberInput } from "@mantine/core";
 import { useForm } from '@mantine/form';
 import { useState } from 'react'
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
- );
 
 interface AddAccountModalProps {
     opened: boolean;
