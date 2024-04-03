@@ -33,6 +33,8 @@ export function NavLinksGroup({
 		const balanceClass = link.balance > 0 ? classes.positive : classes.negative;
 		return (
 			<Button
+				component={Link}
+				href={link.link}
 				key={link.label}
 				className={`${classes.link} ${link.link === pathname && classes.activeLink}`}
 				variant='subtle'

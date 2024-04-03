@@ -6,6 +6,8 @@ import '@mantine/core/styles.css';
 import { ColorSchemeScript, DirectionProvider, MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import SessionProvider from '@/context/SessionProvider';
+import {Navbar} from "@/components/Navbar/Navbar";
+
 export default function RootLayout({children}
     : {children: React.ReactNode})    
 {

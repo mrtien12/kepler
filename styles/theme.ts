@@ -1,7 +1,8 @@
 'use client';
 
 import { createTheme } from '@mantine/core';
-
+import '@mantine/dates/styles.css';
+import '@mantine/charts/styles.css';
 export const theme = createTheme({
 	fontFamily: 'Work Sans',
 	headings: {
