@@ -4,4 +4,5 @@ export interface DebtItem {
     interestRate : number;
     monthlyPayment : number;
 	minimumPayment : number;
+    desireMonths : Date;
 }

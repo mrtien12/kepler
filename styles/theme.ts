@@ -3,6 +3,7 @@
 import { createTheme } from '@mantine/core';
 import '@mantine/dates/styles.css';
 import '@mantine/charts/styles.css';
+import 'mantine-react-table/styles.css'
 export const theme = createTheme({
 	fontFamily: 'Work Sans',
 	headings: {

@@ -131,6 +131,7 @@ export default function AddAccountModal({ opened, onClose }: AddAccountModalProp
 		}
     )
     
+    
     const form = useForm({
         initialValues: {
             accountName: '',

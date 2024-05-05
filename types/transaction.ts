@@ -1,9 +1,8 @@
 export interface Transaction {
     id: string;
-    date: string;
-    payee: string;
+    date: Date;
     category: string;
     memo: string;
-    outflow: number;
-    inflow: number;
+    amount: number;
+    type: string;
 }

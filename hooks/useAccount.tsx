@@ -2,16 +2,15 @@ import { useEffect, useState } from 'react';
 import { db } from '@/firebase';
 import { collection, query, onSnapshot } from 'firebase/firestore';
 import { useSession } from 'next-auth/react';
-
-export interface Account {
-    id: string;
-    accountName: string;
-    accountBalance: number;
-    accountType: string;
-    interestRate: number;
-    payment: number;
-}
-
+import { Account } from '@/types/account';
+// export interface Account {
+//     id: string;
+//     accountName: string;
+//     accountBalance: number;
+//     accountType: string;
+//     interestRate: number;
+//     payment: number;
+// }
 export function useAccounts() {
     const session = useSession();
     const [accounts, setAccounts] = useState<Account[]>([]);
@@ -29,6 +28,7 @@ export function useAccounts() {
                     accountType: doc.data().accountType,
                     interestRate: doc.data().interestRate,
                     payment: doc.data().payment
+                    
                     
                 }));
                 setAccounts(accountsData);

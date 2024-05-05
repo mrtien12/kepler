@@ -13,6 +13,7 @@ import {db} from '@/firebase';
 import { useAccounts } from '@/hooks/useAccount';
 import { NavItem } from '@/types/nav-item';
 import { DebtSimulator } from '../DebtSimulator/DebtSimulator';
+import Link from 'next/link';
 
 interface Props {
 	data: NavItem[];
@@ -42,9 +43,9 @@ export function Navbar({ data }: Props) {
 			<Text>{session.data?.user?.email}</Text>
 			<AddAccountModal opened={opened} onClose={close} />
 			<DebtSimulator opened={openedDebt} onClose={handler.close} />
-			<Button className={classes.button} leftSection={<IconWallet />}> Budget </Button>
-			<Button className={classes.button} leftSection={<IconReport />}> Reports </Button>
-			<Button className={classes.button} leftSection={<IconPaperBag />}> All Accounts </Button>
+			<Button className={classes.button} leftSection={<IconWallet />} href={'/budgets'} component={Link}> Budget </Button>
+			<Button className={classes.button} leftSection={<IconReport />} href={'/insights'} component={Link}> Reports </Button>
+			<Button className={classes.button} leftSection={<IconPaperBag />} > All Accounts </Button>
 			<ScrollArea className={classes.links}>
 				<div className={classes.linksInner}>{links}</div>
 			</ScrollArea>

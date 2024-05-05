@@ -101,8 +101,8 @@ const calculateVolatileDebtDataPoints2 = (debtItem: DebtItem, newPayoffDate: Dat
 }
 
 
-
-export function DebtComparision({ debtData, newMonthlyPayment, newPayoffDate }: { debtData: DebtItem; newMonthlyPayment: number; newPayoffDate: Date}) {
+  //newMonthlyPayment, can be added here  newMonthlyPayment: number;
+export function DebtComparision({ debtData,  newPayoffDate }: { debtData: DebtItem, newPayoffDate: Date}) {
   // const data = calculateVolatileDebtDataPoints(debtData, newMonthlyPayment);
   const data1 = calculateVolatileDebtDataPoints2(debtData, newPayoffDate);
   console.log(data1);
@@ -123,5 +123,4 @@ export function DebtComparision({ debtData, newMonthlyPayment, newPayoffDate }: 
     
 
   )
-  // Here you would return your AreaChart component with the appropriate props
 }

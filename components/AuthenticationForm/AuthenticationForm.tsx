@@ -20,6 +20,12 @@ import {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    // console.log(currentDate);
+    // console.log(year);
+    // console.log(month);
     return (
       <Container size={420} my={40}>
         <Title ta="center" className={classes.title}>
@@ -52,7 +58,7 @@ import {
             await signIn('credentials', {
               email,
               password,
-              callbackUrl: '/dashboard',
+              callbackUrl: `/dashboard/${year}${month}`,
             });
           
           }}
