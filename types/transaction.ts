@@ -5,4 +5,5 @@ export interface Transaction {
     memo: string;
     amount: number;
     type: string;
+    frequency: string;  
 }

@@ -43,6 +43,7 @@ export default function AddTransactionModal({ opened, onClose,accountId }: AddTr
             memo: '',
             amount: 0,
             type: 'Expense',
+            frequency: 'Never'
 
         },
         validate:{
@@ -72,6 +73,7 @@ export default function AddTransactionModal({ opened, onClose,accountId }: AddTr
                 category: transactionData.category,
                 spent: transactionData.amount,
                 available: 0,
+                budgetid: '',
                 transactionids: [transactionRef.id]  // Add new transaction ID
             });
         } else {
@@ -129,6 +131,22 @@ export default function AddTransactionModal({ opened, onClose,accountId }: AddTr
                         required
                         placeholder="Amount"
                         {...form.getInputProps('amount')}
+                    />
+
+                    <Select 
+                        label="Frequency"
+                        data={
+                            [
+                                "Never",
+                                "Daily",
+                                "Weekly",
+                                "Twice a month",
+                                "Monthly",
+                                "Yearly"
+                            ]
+                        }
+                        {...form.getInputProps('frequency')}
+
                     />
                     <Button type="submit" mt="md">Submit</Button>
                 </form>

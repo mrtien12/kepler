@@ -2,6 +2,7 @@
 
 // Base type for all budget types
 export type Budget = {
+    name: string;
     categoryId: string;
     value:number
 };

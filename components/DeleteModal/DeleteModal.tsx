@@ -4,7 +4,7 @@ import {useSession} from 'next-auth/react'
 import {redirect} from 'next/navigation'
 import {db} from '@/firebase'
 import { Transaction } from '@/types/transaction'
-import { doc, setDoc, deleteDoc,collection,query,getDocs, updateDoc, where } from 'firebase/firestore'
+import { doc, setDoc,deleteField, deleteDoc,collection,query,getDocs,getDoc, updateDoc, where } from 'firebase/firestore'
 import { DateTimePicker } from '@mantine/dates'
 interface DeleteModalProps {
     opened: boolean;
@@ -43,21 +43,36 @@ export default function DeleteModal({ opened, onClose,accountId,oldTransaction }
         const categoryDocs = await getDocs(categoryQuery);
     
         if (!categoryDocs.empty) {
-            categoryDocs.forEach(async (doc) => {
-                const categoryData = doc.data();
+            categoryDocs.forEach(async (doc1) => {
+                const categoryData = doc1.data();
                 // Remove transaction ID from the category
                 const updatedTransactionIds = categoryData.transactionids.filter((id: string) => id !== transactionId);
     
-                if (updatedTransactionIds.length === 0 && categoryData.budgeted !== null) {
+                if (updatedTransactionIds.length === 0 && categoryData.budgeteid === "") {
                     // Delete the category if no transactions are left
-                    await deleteDoc(doc.ref);
+                    await deleteDoc(doc1.ref);
                     console.log('Category deleted successfully because it had no more transactions.');
-                } else {
+                    // Update the budget that has a field name categoryid which equal to this doc.ref, delete the field since this category is deleted 
+                    
+
+                } 
+                
+                // else if (updatedTransactionIds.length === 0 && categoryData.budgeteid !== "") {
+                //     await updateDoc(doc1.ref, {
+                //         transactionids: updatedTransactionIds,
+                //         spent: categoryData.spent - oldTransaction!.amount  // Adjust the spent amount if needed
+                //     });
+                // }
+                else {
                     // Update the category with the new transaction ID list
-                    await updateDoc(doc.ref, {
+                    await updateDoc(doc1.ref, {
                         transactionids: updatedTransactionIds,
-                        spent: categoryData.spent + oldTransaction!.amount  // Adjust the spent amount if needed
+                        spent: categoryData.spent - oldTransaction!.amount  // Adjust the spent amount if needed
                     });
+
+                    
+
+                    
                 }
             });
         }

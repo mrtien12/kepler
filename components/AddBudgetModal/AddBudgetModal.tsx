@@ -15,9 +15,10 @@ interface AddBudgetModalProps {
     opened: boolean;
     onClose: () => void;
     categoryId: string;
+    name:string;
 }
 
-export default function AddBudgetModal({ opened, onClose, categoryId }: AddBudgetModalProps) {
+export default function AddBudgetModal({ opened, onClose, categoryId, name }: AddBudgetModalProps) {
     const theme = useMantineTheme();
     const session = useSession(
 		{
@@ -77,6 +78,7 @@ export default function AddBudgetModal({ opened, onClose, categoryId }: AddBudge
         }
     })
 const addBudgettoFirestore = async (budgetData: any) => {
+    console.log(budgetData)
     const categoryId = budgetData.categoryId;
 
     const newBudgetRef  = await addDoc(collection(db, 'users', session.data?.user?.email as string, 'budgets'), budgetData);
@@ -124,6 +126,7 @@ const addBudgettoFirestore = async (budgetData: any) => {
                             form.getInputProps('type').onChange(value);
                             setCurrentForm(value);
                             form.reset()
+                            form.setValues({'type': value!})
                         }
                     }  
                 />
@@ -245,6 +248,7 @@ const addBudgettoFirestore = async (budgetData: any) => {
                     onClick={
                         () => {
                             form.setFieldValue('categoryId', categoryId);
+                            form.setFieldValue('name', name);
                         }
                     }
                     > Add Budget </Button>
