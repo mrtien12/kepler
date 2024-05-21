@@ -1,0 +1,35 @@
+.card {
+  background-color: var(--mantine-color-green-filled);
+}
+
+.container {
+  display: flex;
+  align-items: center;
+}
+
+.chart {
+  flex: 2;
+}
+
+.statsContainer {
+  flex: 2;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column; /* Ensure children are stacked vertically */
+  gap: 10px; /* Add space between items */
+}
+
+.title {
+  color: var(--mantine-color-white);
+  opacity: 0.65;
+}
+
+.stats {
+  color: var(--mantine-color-white);
+}
+
+.buttonContainer {
+  margin-top: 10px; /* Add space above the button */
+  display: flex;
+  justify-content: flex-start; /* Align button to the left */
+}

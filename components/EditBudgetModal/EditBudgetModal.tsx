@@ -2,26 +2,46 @@ import {useState, useEffect, use} from 'react';
 import {Modal, Text, Select, NumberInput, Tabs, Paper, Switch,useMantineTheme,rem, Group, Grid, Button} from '@mantine/core' 
 import { Category } from "@/types/category";
 import { useSession } from "next-auth/react";
-// import { SpendingBudget, SavingsBudget, DebtPaymentBudget } from '@/types/budget';
 import { DatePickerInput, MonthPickerInput } from '@mantine/dates';
 import { IconSun, IconMoonStars } from '@tabler/icons-react';
 import { useForm } from '@mantine/form';
 import {db} from '@/firebase';
 import { getFirestore, collection, doc, setDoc,addDoc,getDocs,query,updateDoc, arrayUnion,where,getDoc } from "firebase/firestore";
-
+import { Budget } from '@/types/budget';
 import { redirect } from "next/navigation";
 
-interface AddBudgetModalProps {
+
+interface EditBudgetModalProps {
     opened: boolean;
     onClose: () => void;
-    categoryId: string;
-    name:string;
-    timestart: Date;
+    budget: Budget;
+    setSelected:(item: Budget |undefined) => void;
 }
 
 
+export default function EditBudgetModal({opened, onClose, budget,setSelected}: EditBudgetModalProps) {
+    const session = useSession(
+        {
+            required: true,
+            onUnauthenticated() {
+                redirect('/signin');
+            }
+        }
+    )
 
-export default function AddBudgetModal({ opened, onClose, categoryId, name, timestart }: AddBudgetModalProps) {
+    
+
+    const form = useForm({
+        initialValues: {
+            id: budget.id,
+            value: budget.value,
+            name: budget.name,
+            categoryId: budget.categoryId,
+
+        }
+    })
+
+
     const theme = useMantineTheme();
     const getNextMonth = () => {
         const date = new Date();
@@ -35,101 +55,65 @@ export default function AddBudgetModal({ opened, onClose, categoryId, name, time
     const [yearly, setYearly] = useState<Date>(getNextMonth());
     const [custom, setCustom] = useState<Date>(getNextMonth());
     const [budgetType, setBudgetType] = useState<string>('1');
-
-    const handleUpdateBudget = async (budgetData: any) => {
+    console.log(activeTab)
+    const handleEditBudget = async (budgetData: any) => {
         console.log(budgetData)
-        const categoryId = budgetData.categoryId;
-    
-        const newBudgetRef  = await addDoc(collection(db, 'users', session.data?.user?.email as string, 'budgets'), budgetData);
-    
-        const budgetId = newBudgetRef.id;
-    
-        const categoryRef = doc(db, 'users', session.data?.user?.email as string, 'categories', categoryId);
-    
-    
-        const categorySnap = await getDoc(categoryRef);
-    
-        if (categorySnap.exists()) {
-            const categoryData = categorySnap.data() as Category;
-            const updatedCategoryData: Category = {
-                ...categoryData,
-                budgetid: budgetId
-            }
-            await setDoc(categoryRef, updatedCategoryData);
-        
-        }
+        const budgetRef = doc(db, "users", session.data?.user?.email as string, "budgets", budgetData.id);
+        await updateDoc(budgetRef, {
+            value: budgetData.value,
+            name: budgetData.name,
+            categoryId: budgetData.categoryId,
+            type: budgetData.type,
+            budgetType: budgetData.budgetType,
+            time: budgetData.time
+        });
+
+        setSelected(undefined)
     }
 
-    const handleCloseModal = () => {
-        onClose();
+
+    useEffect(() => {
+        if (budget.type === 'Weekly') {
+          setActiveTab(budget.type);
+          setWeekly(budget.time as string);
+        } else if (budget.type === 'Monthly') {
+          setActiveTab(budget.type);
+          setMonthly(budget.time as string);
+        } else if (budget.type === 'Yearly') {
+          setActiveTab(budget.type);
+          setYearly(budget.time as Date);
+        } else if (budget.type === 'Custom') {
+          setActiveTab(budget.type);
+          setCustom(budget.time as Date);
+        }
+      }, [budget]);
+
+     const handleCloseModal = () => {
+        
         setActiveTab('Weekly');
         setWeekly('0');
         setMonthly('1');
         setYearly(getNextMonth());
         setCustom(getNextMonth());
         form.reset()
+        onClose();
     }
-
-    const form = useForm({
-        initialValues: {
-            name : name,
-            categoryId: categoryId,
-            value: 0
-    },
-    validate :{
-        value: (amount) => {
-            if (amount <= 0) {
-                return 'Please enter a valid amount';
-            }
-        }
-    }
-}
-    )
-         const session = useSession(
-     		{
-     			required: true,
-     			onUnauthenticated() {
-     				redirect('/signin');
-     			}
-     		}
-         )  
-
-    useEffect(() => {
-            if (activeTab === 'Weekly') {
-                setMonthly('1');
-                setYearly(getNextMonth());
-                setCustom(getNextMonth());
-            } else if (activeTab === 'Monthly') {
-                setWeekly('0');
-                setYearly(getNextMonth());
-                setCustom(getNextMonth());
-
-            } else if (activeTab === 'Yearly') {
-                setWeekly('0');
-                setMonthly('1');
-                setCustom(getNextMonth());
-            }
-
-            else if (activeTab === 'Custom') {
-                setWeekly('0');
-                setMonthly('1');
-                setYearly(getNextMonth());
-            }
-    }, [activeTab]);
     return (
-        <Modal opened={opened} onClose={onClose} title="Add Budget"> 
-        <form onSubmit={
-                 form.onSubmit((values) => handleUpdateBudget(values)
+        <>
+        <Modal opened={opened} onClose={onClose} title="Edit Budget">
+            <form onSubmit={
+                 form.onSubmit((values) => handleEditBudget(values)
                      .then(() =>{
-                        handleCloseModal();
+                         handleCloseModal();
+                         
                      }))}>
-        <Tabs value={activeTab} onChange={
-            (value) => {
-                setActiveTab(value);
-                
-                
-            }
+            <Tabs value={activeTab} onChange={
+                (value) => {
+                    setActiveTab(value);
+                    
+                }
         }>
+
             <Tabs.List>
                 <Tabs.Tab value="Weekly">
                 Weekly
@@ -144,7 +128,9 @@ export default function AddBudgetModal({ opened, onClose, categoryId, name, time
                     Custom
                 </Tabs.Tab>
             </Tabs.List>
-        <Tabs.Panel value="Weekly">
+
+
+            <Tabs.Panel value="Weekly">
             <NumberInput label="I need" required placeholder="Enter amount" 
             {...form.getInputProps('value')}
             />
@@ -293,8 +279,7 @@ export default function AddBudgetModal({ opened, onClose, categoryId, name, time
                 }}
 />
         </Tabs.Panel>
-        
-      
+            
         </Tabs>
 
         <Grid justify='flex-end'>
@@ -302,16 +287,28 @@ export default function AddBudgetModal({ opened, onClose, categoryId, name, time
                      <Button type="submit" color="blue"
                      onClick={
                          () => {
-                            
                             form.setFieldValue('type',activeTab)
-                            form.setFieldValue('time', activeTab === 'Weekly' ? weekly : activeTab === 'Monthly' ? monthly : activeTab === 'Yearly' ? yearly : custom)
-                            form.setFieldValue('budgetType', budgetType)
-                            form.setFieldValue('timestart', timestart)
+                            if (activeTab === 'Weekly') {
+                                form.setFieldValue('time', weekly)
+                                form.setFieldValue('budgetType', budgetType)
+                            }
+                            else if (activeTab === 'Monthly') {
+                                form.setFieldValue('time', monthly)
+                                form.setFieldValue('budgetType', budgetType)
+                            }
+                            else if (activeTab === 'Yearly') {
+                                form.setFieldValue('time', yearly)
+                                form.setFieldValue('budgetType', budgetType)
+                            }
+                            else if (activeTab === 'Custom') {
+                                form.setFieldValue('time', custom)
+                                form.setFieldValue('budgetType', budgetType)
                          }
-                     }
-                     > Add Budget </Button>
-                 </Grid>
+                     }}> Edit Budget </Button>
+        </Grid>
         </form>
         </Modal>
+        </>
     )
+
 }

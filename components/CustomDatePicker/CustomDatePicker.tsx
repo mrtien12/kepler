@@ -23,7 +23,7 @@ export default function CustomDatePicker(params: {timeid:string, updateState: (n
     const navigateAndUpdateState = (newDate: Date) => {
         const newTimeid = `${newDate.getFullYear()}${newDate.getMonth() + 1}`;
         params.updateState(newTimeid); // Update parent component state
-        router.replace(`/dashboard/${newTimeid}`); // Navigation
+        router.replace(`/budgets/${newTimeid}`); // Navigation
     };
 
     const onClickLeft = () => {
@@ -59,7 +59,7 @@ export default function CustomDatePicker(params: {timeid:string, updateState: (n
                     
                     }}
                     
-                    
+                    /*  */
                 /> 
                 <ActionIcon size="xl" color="blue" radius="xl" variant="outline" onClick={onClickRight}>
                     <IconChevronRight />

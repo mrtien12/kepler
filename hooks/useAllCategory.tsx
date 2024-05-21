@@ -18,7 +18,8 @@ export const useAllCategory = () => {
                     spent: doc.data().spent,
                     available: doc.data().available,
                     transactionids: doc.data().transactionids,
-                    budgetid: doc.data().budgetid
+                    budgetid: doc.data().budgetid,
+                    startDate: doc.data().startDate.toDate()
                 }));
                 setCategories(categoriesData);
                 setLoading(false);

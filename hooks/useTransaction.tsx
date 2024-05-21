@@ -23,7 +23,8 @@ export function useTransactions(accountId: string) {
                     category: doc.data().category,
                     memo: doc.data().memo,
                     amount: doc.data().amount,
-                    type: doc.data().type
+                    type: doc.data().type,
+                    frequency: doc.data().frequency,
                 }));
                 setTransactions(transactionsData);
                 setStatus('success');

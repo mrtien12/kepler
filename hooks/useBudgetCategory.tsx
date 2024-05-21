@@ -2,13 +2,16 @@ import {db} from '@/firebase';
 import {doc, getDoc,collection,query,onSnapshot, where} from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { SpendingBudget, SavingsBudget, DebtPaymentBudget } from '@/types/budget';
+import parseTimeid from '@/utils/function/parseTimeid';
+// import { SpendingBudget, SavingsBudget, DebtPaymentBudget } from '@/types/budget';
 import { redirect } from 'next/navigation';
 
 //take 3 as 3 data types: SpendingBudget, SavingsBudget, DebtPaymentBudget
 
-export function useBudgetCategory() {
+export function useBudgetCategory(timeid: string) {
     const [budgetedCategories, setBudgetedCategories] = useState<any[]>([]);
+    const {startDate,endDate} = parseTimeid(timeid);
+
     const session = useSession(
         {
             required: true,
@@ -20,42 +23,14 @@ export function useBudgetCategory() {
 
     useEffect(() => {
         if (session.data?.user?.email) {
-            const q = query(collection(db, 'users', session?.data?.user?.email as string, 'budgets'));
-            const unsubscribe = onSnapshot(q, (querySnapshot) => {
-                const budgetData: any[] = querySnapshot.docs.map(doc => {
-                    const data = doc.data();
-                    if (data.type === 'spending') {
-                        const budget: SpendingBudget = {
-                            name: data.name,
-                            categoryId: data.categoryId,
-                            value: data.value,
-                            type: data.type,
-                            frequency: data.frequency
-                        }
-                        return budget;
-                    } else if (data.type === 'savings') {
-                        const budget: SavingsBudget = {
-                            name: data.name,
-                            categoryId: data.categoryId,
-                            value: data.value,
-                            type: data.type,
-                            date: data.date
-                        }
-                        return budget;
-                    } else if (data.type === 'debt') {
-                        const budget: DebtPaymentBudget = {
-                            name: data.name,
-                            categoryId: data.categoryId,
-                            value: data.value,
-                            type: data.type,
-                            date: data.date
-                        }
-                        return budget;
-                    }
+            const q = query(collection(db, "users", session.data.user.email, "budgets"),where("timestart", ">=", startDate),where("timestart", "<=", endDate));
+            const unsubscribe = onSnapshot(q, async (snapshot) => {
+                const budgetedCategories = snapshot.docs.map((doc) => {
+                    return { id: doc.id, ...doc.data() };
                 });
-                setBudgetedCategories(budgetData);
+                setBudgetedCategories(budgetedCategories);
             });
-            return () => unsubscribe();
+            return unsubscribe;
         }
     }, [session]);
 

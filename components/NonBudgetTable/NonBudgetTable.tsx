@@ -1,6 +1,5 @@
 import React from 'react';
 import { Card, Table, Button, ActionIcon } from '@mantine/core';
-import { useNotBudgetCategory } from '@/hooks/useNotBudgetCategory';
 import { Category } from '@/types/category';
 import AddBudgetModal from '@/components/AddBudgetModal/AddBudgetModal'
 import { useDisclosure } from '@mantine/hooks';
